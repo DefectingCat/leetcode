@@ -1,18 +1,22 @@
 use std::collections::HashMap;
 
-fn two_sum(nums: &[i32], target: i32, cur_index: usize, cur: i32) -> Vec<Vec<i32>> {
+fn two_sum(nums: &[i32], target: i32, cur: i32) -> Vec<Vec<i32>> {
     let mut table = HashMap::new();
 
     nums.iter().enumerate().fold(vec![], |mut prev, (i, v)| {
         let x = target - v;
         let y = table.get(&x);
         match y {
-            Some(y) if i != *y && cur_index != i && cur_index != *y => {
+            /* Some(y) if i != *y && cur_index != i && cur_index != *y => {
+                let mut res = vec![nums[i], nums[*y], cur];
+                res.sort();
+                prev.push(res)
+            } */
+            Some(y) => {
                 let mut res = vec![nums[i], nums[*y], cur];
                 res.sort();
                 prev.push(res)
             }
-            Some(_) => {}
             None => {
                 table.insert(v, i);
             }
@@ -27,8 +31,15 @@ impl Solution {
             .enumerate()
             .fold(HashMap::new(), |mut prev, (index, cur)| {
                 let target = 0 - cur;
-                let mut res = two_sum(&nums, target, index, *cur);
-                println!("cur {cur} target {target} res {res:?}");
+                /* let rest = nums
+                .iter()
+                .enumerate()
+                .filter(|(i, n)| *i != index)
+                .map(|(i, n)| *n)
+                .collect::<Vec<_>>(); */
+                let mut rest = nums.clone();
+                rest.remove(index);
+                let mut res = two_sum(&rest, target, *cur);
                 if res.len() == 0 {
                     return prev;
                 }
